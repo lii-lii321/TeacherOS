@@ -1,0 +1,98 @@
+# TeacherOS
+
+AI teaching & tutoring workbench for independent tutors — student profiles, lesson
+records, homework with mastery tracking, an AI copilot that turns one-line lesson
+notes into structured records + parent messages, and simple business analytics.
+
+Part of a personal product matrix (TeacherOS → teaching delivery, TutorFlow →
+client acquisition CRM, Data Analyst Agent → data-science engine).
+
+## Features (v0.1)
+
+- **Students** — CRUD, archive, target-vs-current scores, aggregate profile
+  (knowledge-point mastery, weak points, recent homework accuracy).
+- **AI Copilot** — paste a raw lesson note (`今天讲了二次函数，学生顶点式理解一般，做10题错3题`);
+  the copilot extracts topic/knowledge points/performance/error stats, drafts
+  homework, and generates a parent-ready WeChat message. Rule-based by default
+  (zero API key needed), optionally enriched by any OpenAI-compatible LLM.
+- **Homework & mastery engine** — per-item grading updates knowledge-point
+  mastery via an EWMA update (`new = 0.7*old + 0.3*observed`).
+- **Business** — payments, monthly income/expense, active/new students,
+  average price per class.
+
+## Quickstart
+
+```bash
+python -m venv .venv
+.venv\Scripts\pip install -r requirements.txt   # Windows
+.venv\Scripts\uvicorn main:app --reload --port 8000
+```
+
+Open http://127.0.0.1:8000/docs for the interactive API.
+
+Seed demo data:
+
+```bash
+.venv\Scripts\python scripts\seed_demo.py
+```
+
+Optional LLM enrichment (any OpenAI-compatible endpoint, e.g. DeepSeek/Qwen/GLM):
+
+```bash
+copy .env.example .env   # then edit TEACHEROS_LLM_* values
+```
+
+Dashboard (optional, MUJI-style Streamlit UI):
+
+```bash
+.venv\Scripts\pip install -r requirements-dashboard.txt
+.venv\Scripts\streamlit run dashboard.py
+```
+
+## Architecture
+
+```
+main.py                  FastAPI entry (routers, CORS, lifespan create_all)
+app/
+├── config.py            pydantic-settings (TEACHEROS_* env)
+├── database.py          async SQLAlchemy engine/session (SQLite dev, MySQL-ready)
+├── models/              Student, KnowledgePoint, ClassSession, Homework, Payment
+├── schemas/             Pydantic v2 request/response models
+├── routers/             students / classes / copilot / homework / business
+├── services/
+│   ├── copilot_service.py    note → structured extraction → homework draft → parent msg
+│   ├── mastery_service.py    EWMA mastery updates + profile aggregation
+│   ├── homework_service.py   grading pipeline
+│   ├── business_service.py   monthly summary
+│   └── llm/                  provider abstraction: mock | openai-compatible
+└── utils/
+tests/                   pytest + httpx against in-memory SQLite
+scripts/seed_demo.py     demo students/sessions/payments
+dashboard.py             Streamlit UI
+```
+
+## API overview
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| POST/GET/PATCH/DELETE | `/students` | manage students (DELETE = archive) |
+| GET | `/students/{id}/profile` | mastery, weak points, recent accuracy |
+| POST/GET | `/classes` | lesson records |
+| POST | `/copilot/lesson-note` | note → session + homework + parent message |
+| POST | `/homework/{id}/submit` | grade items, update mastery |
+| GET | `/business/summary?month=YYYY-MM` | income, active students, avg price |
+
+## Roadmap
+
+- [x] Phase 1 MVP — students, sessions, copilot note parsing, parent messages
+- [x] Phase 2 (start) — knowledge-point mastery engine + student profile
+- [ ] Phase 2 (rest) — learning trends, per-chapter reports
+- [ ] Phase 3 — multi-step copilot (note → plan → homework → feedback loop)
+- [ ] Phase 4 — renewal/retention analytics, source tracking
+- [ ] Phase 5 — real users (first 10 tutors), question bank integration
+
+## Testing
+
+```bash
+.venv\Scripts\python -m pytest -q
+```

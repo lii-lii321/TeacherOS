@@ -1,0 +1,53 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.database import get_db
+from app.models import Homework
+from app.routers.students import get_student_or_404
+from app.schemas.homework import GradeOut, HomeworkCreate, HomeworkOut, SubmitResults
+from app.services import homework_service
+
+router = APIRouter(prefix="/homework", tags=["homework"])
+
+
+@router.post("", response_model=HomeworkOut, status_code=201)
+async def create_homework(payload: HomeworkCreate, db: AsyncSession = Depends(get_db)):
+    await get_student_or_404(db, payload.student_id)
+    items = []
+    for i, item in enumerate(payload.items, start=1):
+        items.append({"id": i, "knowledge_point": item.knowledge_point, "difficulty": item.difficulty, "question": item.question})
+    homework = Homework(student_id=payload.student_id, title=payload.title, items=items)
+    db.add(homework)
+    await db.commit()
+    await db.refresh(homework)
+    return homework
+
+
+@router.get("", response_model=list[HomeworkOut])
+async def list_homework(student_id: int | None = None, db: AsyncSession = Depends(get_db)):
+    query = select(Homework).order_by(Homework.id.desc())
+    if student_id is not None:
+        query = query.where(Homework.student_id == student_id)
+    return list((await db.execute(query)).scalars().all())
+
+
+@router.get("/{homework_id}", response_model=HomeworkOut)
+async def get_homework(homework_id: int, db: AsyncSession = Depends(get_db)):
+    homework = await db.get(Homework, homework_id)
+    if homework is None:
+        raise HTTPException(status_code=404, detail="homework not found")
+    return homework
+
+
+@router.post("/{homework_id}/submit", response_model=GradeOut)
+async def submit_homework(homework_id: int, payload: SubmitResults, db: AsyncSession = Depends(get_db)):
+    homework = await db.get(Homework, homework_id)
+    if homework is None:
+        raise HTTPException(status_code=404, detail="homework not found")
+    accuracy, updates = await homework_service.grade_homework(db, homework, payload.results)
+    return GradeOut(
+        homework_id=homework.id,
+        accuracy=accuracy,
+        knowledge_updates=[{"name": kp.name, "mastery": kp.mastery} for kp in updates],
+    )
