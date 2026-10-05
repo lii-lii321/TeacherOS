@@ -48,3 +48,17 @@ async def test_trends_insufficient_data(client):
 async def test_trends_missing_student_404(client):
     resp = await client.get("/students/999/trends")
     assert resp.status_code == 404
+
+
+async def test_trends_mastery_logs_window_latest(client):
+    student = await create_student(client)
+    for _ in range(50):
+        await add_graded_homework(client, student["id"], [True])
+    await add_graded_homework(client, student["id"], [False])
+
+    trends = (await client.get(f"/students/{student['id']}/trends")).json()
+    profile = (await client.get(f"/students/{student['id']}/profile")).json()
+
+    assert len(trends["mastery_logs"]) == 50
+    current = {kp["name"]: kp["mastery"] for kp in profile["knowledge_points"]}
+    assert trends["mastery_logs"][-1]["mastery"] == current["一次函数"]

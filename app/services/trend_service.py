@@ -29,10 +29,11 @@ async def build_trends(db: AsyncSession, student: Student) -> dict:
         await db.scalars(
             select(MasteryLog)
             .where(MasteryLog.student_id == student_id, MasteryLog.id.is_not(None))
-            .order_by(MasteryLog.created_at, MasteryLog.id)
+            .order_by(MasteryLog.created_at.desc(), MasteryLog.id.desc())
             .limit(50)
         )
     ).all()
+    logs = list(reversed(logs))
     mastery_logs = [
         {"date": log.created_at.date().isoformat(), "name": log.name, "mastery": log.mastery, "observed": log.observed}
         for log in logs
