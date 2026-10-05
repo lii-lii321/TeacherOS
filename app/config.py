@@ -9,7 +9,12 @@ class Settings(BaseSettings):
     llm_api_key: str = ""
     llm_model: str = "gpt-4o-mini"
 
-    model_config = {"env_prefix": "TEACHEROS_", "extra": "ignore"}
+    model_config = {
+        "env_prefix": "TEACHEROS_",
+        "extra": "ignore",
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+    }
 
 
 settings = Settings()
