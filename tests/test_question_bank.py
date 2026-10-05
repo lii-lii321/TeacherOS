@@ -1,6 +1,17 @@
+from app.services.copilot_service import KP_TOPICS
+from app.services.question_bank import _load
 from tests.test_students import create_student
 
 NOTE = "今天讲了二次函数，学生对顶点式理解一般，做了10道题错了3道"
+
+
+def test_bank_covers_all_kp_topics():
+    bank = _load()
+    for kp in KP_TOPICS:
+        pool = bank.get(kp, {})
+        assert len(pool.get("basic", [])) >= 3, kp
+        assert len(pool.get("consolidation", [])) >= 2, kp
+        assert len(pool.get("advanced", [])) >= 1, kp
 
 
 async def create_lesson_homework(client):

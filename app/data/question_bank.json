@@ -1,4 +1,228 @@
 {
+  "有理数": {
+    "basic": [
+      {"question": "-3 的绝对值是多少？", "answer": "3"},
+      {"question": "计算：(-2) + 5 = ?", "answer": "3"},
+      {"question": "-1，0，2 中哪个是负数？", "answer": "-1"}
+    ],
+    "consolidation": [
+      {"question": "计算：(-3) × (-4) = ?", "answer": "12"},
+      {"question": "计算：-2² = ?", "answer": "-4"}
+    ],
+    "advanced": [
+      {"question": "已知 |x - 2| = 3，且 x 为负数，求 x。", "answer": "-1"}
+    ]
+  },
+  "整式": {
+    "basic": [
+      {"question": "化简：3x + 2x = ?", "answer": "5x"},
+      {"question": "单项式 -2x²y 的次数是多少？", "answer": "3"},
+      {"question": "多项式 x² + 3x - 1 有几项？", "answer": "3"}
+    ],
+    "consolidation": [
+      {"question": "计算：(2x²)·(3x³) = ?", "answer": "6x⁵"},
+      {"question": "化简：2(x + 1) - (x - 3) = ?", "answer": "x+5"}
+    ],
+    "advanced": [
+      {"question": "已知 x = 2，求整式 3x² - 2x + 1 的值。", "answer": "9"}
+    ]
+  },
+  "一元一次方程": {
+    "basic": [
+      {"question": "解方程：x + 3 = 7，求 x。", "answer": "4"},
+      {"question": "解方程：2x = 10，求 x。", "answer": "5"},
+      {"question": "解方程：3x - 1 = 5，求 x。", "answer": "2"}
+    ],
+    "consolidation": [
+      {"question": "解方程：2x + 3 = x + 8，求 x。", "answer": "5"},
+      {"question": "解方程：x/2 - 1 = 2，求 x。", "answer": "6"}
+    ],
+    "advanced": [
+      {"question": "某数的 3 倍减 2 等于 10，求这个数。", "answer": "4"}
+    ]
+  },
+  "几何图形初步": {
+    "basic": [
+      {"question": "长方体有几个顶点？", "answer": "8"},
+      {"question": "直线、线段、射线中，可以度量长度的是哪一种？", "answer": "线段"},
+      {"question": "1 个周角等于多少度？", "answer": "360"}
+    ],
+    "consolidation": [
+      {"question": "35° 的余角是多少度？", "answer": "55"},
+      {"question": "钟表 3 点整，时针与分针的夹角是多少度？", "answer": "90"}
+    ],
+    "advanced": [
+      {"question": "一个角的补角是它的余角的 3 倍，求这个角。", "answer": "45"}
+    ]
+  },
+  "相交线与平行线": {
+    "basic": [
+      {"question": "对顶角相等吗？（是/否）", "answer": "是"},
+      {"question": "两直线平行，同位角相等还是互补？", "answer": "相等"},
+      {"question": "在同一平面内，垂直于同一条直线的两条直线平行吗？（是/否）", "answer": "是"}
+    ],
+    "consolidation": [
+      {"question": "两直线平行，一条内错角为 65°，另一条内错角是多少度？", "answer": "65"},
+      {"question": "一个角为 40°，它的邻补角是多少度？", "answer": "140"}
+    ],
+    "advanced": [
+      {"question": "两平行线被第三条直线所截，同旁内角之比为 2:3，求较大的角。", "answer": "108"}
+    ]
+  },
+  "实数": {
+    "basic": [
+      {"question": "9 的算术平方根是多少？", "answer": "3"},
+      {"question": "√2 是有理数还是无理数？", "answer": "无理数"},
+      {"question": "-8 的立方根是多少？", "answer": "-2"}
+    ],
+    "consolidation": [
+      {"question": "计算：√49 + √16 = ?", "answer": "11"},
+      {"question": "16 的平方根有哪些？", "answer": "±4"}
+    ],
+    "advanced": [
+      {"question": "一个正数的两个平方根为 +5 和 -5，求这个数。", "answer": "25"}
+    ]
+  },
+  "平面直角坐标系": {
+    "basic": [
+      {"question": "点 (3, -2) 在第几象限？", "answer": "第四象限"},
+      {"question": "原点的坐标是什么？", "answer": "(0, 0)"},
+      {"question": "x 轴上点的纵坐标是多少？", "answer": "0"}
+    ],
+    "consolidation": [
+      {"question": "点 (2, 3) 关于 x 轴对称的点的坐标是什么？", "answer": "(2, -3)"},
+      {"question": "点 (-1, 4) 到 x 轴的距离是多少？", "answer": "4"}
+    ],
+    "advanced": [
+      {"question": "已知点 A(2, m) 与 B(n, 3) 关于 y 轴对称，求 m + n。", "answer": "1"}
+    ]
+  },
+  "二元一次方程组": {
+    "basic": [
+      {"question": "x + y = 5 且 x - y = 1，求 x。", "answer": "3"},
+      {"question": "方程 2x + y = 6 中，x = 1 时正整数 y = ?", "answer": "4"},
+      {"question": "x = 1，y = 2 是方程 x + y = 3 的解吗？（是/否）", "answer": "是"}
+    ],
+    "consolidation": [
+      {"question": "解方程组：x + y = 7，x - y = 3，求 xy。", "answer": "10"},
+      {"question": "解方程组：2x + y = 8，x = 3，求 y。", "answer": "2"}
+    ],
+    "advanced": [
+      {"question": "鸡兔同笼，共 10 个头，28 只脚，鸡有几只？", "answer": "6"}
+    ]
+  },
+  "不等式": {
+    "basic": [
+      {"question": "解不等式：x + 1 > 4，求 x 的取值范围。", "answer": "x>3"},
+      {"question": "不等式 2x < 8 的解集是什么？", "answer": "x<4"},
+      {"question": "-3 与 -5 哪个比较大？", "answer": "-3"}
+    ],
+    "consolidation": [
+      {"question": "解不等式：3x - 2 ≥ 4，求 x 的取值范围。", "answer": "x≥2"},
+      {"question": "不等式 -2x > 6 的解集是什么？", "answer": "x<-3"}
+    ],
+    "advanced": [
+      {"question": "不等式组 x > 1 且 x < 4 的整数解有几个？", "answer": "2"}
+    ]
+  },
+  "数据的收集与整理": {
+    "basic": [
+      {"question": "数据 4, 6, 8 的平均数是多少？", "answer": "6"},
+      {"question": "数据 1, 2, 2, 3 的众数是多少？", "answer": "2"},
+      {"question": "普查与抽样调查中，只调查部分对象的是哪一种？", "answer": "抽样调查"}
+    ],
+    "consolidation": [
+      {"question": "数据 3, 5, 7, 9, 11 的中位数是多少？", "answer": "7"},
+      {"question": "数据 2, 4, 6, 8 的平均数的 2 倍是多少？", "answer": "10"}
+    ],
+    "advanced": [
+      {"question": "5 个数据的平均数为 8，去掉数据 6 后，剩下 4 个数据的平均数是多少？", "answer": "8.5"}
+    ]
+  },
+  "统计": {
+    "basic": [
+      {"question": "数据 5, 5, 5 的方差是多少？", "answer": "0"},
+      {"question": "数据 2, 3, 4 的中位数是多少？", "answer": "3"},
+      {"question": "扇形统计图能直接反映部分与整体的关系吗？（是/否）", "answer": "是"}
+    ],
+    "consolidation": [
+      {"question": "数据 1, 2, 3, 4 的方差是多少？", "answer": "1.25"},
+      {"question": "数据 10, 20, 30 的极差是多少？", "answer": "20"}
+    ],
+    "advanced": [
+      {"question": "数据 1, 2, 3 的每个数都加 2，新数据的平均数是多少？", "answer": "4"}
+    ]
+  },
+  "分式": {
+    "basic": [
+      {"question": "分式 1/x 中 x 的取值范围是什么？", "answer": "x≠0"},
+      {"question": "化简：x²/x³ = ?（用 1/x 的形式表示）", "answer": "1/x"},
+      {"question": "当 x = 2 时，分式 6/x 的值是多少？", "answer": "3"}
+    ],
+    "consolidation": [
+      {"question": "化简：(x² - 1)/(x + 1)（x ≠ -1）= ?", "answer": "x-1"},
+      {"question": "计算：1/2 + 1/3 = ?", "answer": "5/6"}
+    ],
+    "advanced": [
+      {"question": "若分式 (x - 2)/(x + 3) 的值为 0，求 x。", "answer": "2"}
+    ]
+  },
+  "反比例函数": {
+    "basic": [
+      {"question": "反比例函数 y = 3/x 中 k = ?", "answer": "3"},
+      {"question": "反比例函数 y = k/x（k > 0）的图像在第几象限？", "answer": "第一、三象限"},
+      {"question": "点 (1, 2) 在反比例函数 y = k/x 的图像上，求 k。", "answer": "2"}
+    ],
+    "consolidation": [
+      {"question": "反比例函数 y = 4/x 中，x = 2 时 y = ?", "answer": "2"},
+      {"question": "反比例函数 y = 6/x 中，x > 0 时 y 随 x 的增大而减小吗？（是/否）", "answer": "是"}
+    ],
+    "advanced": [
+      {"question": "点 (2, 3) 与点 (m, 6) 都在 y = k/x 的图像上，求 m。", "answer": "1"}
+    ]
+  },
+  "勾股定理": {
+    "basic": [
+      {"question": "直角三角形两直角边为 3 和 4，斜边是多少？", "answer": "5"},
+      {"question": "勾股定理中，斜边的平方等于什么？", "answer": "两直角边的平方和"},
+      {"question": "直角三角形两直角边为 6 和 8，斜边是多少？", "answer": "10"}
+    ],
+    "consolidation": [
+      {"question": "直角三角形斜边为 13，一条直角边为 5，另一条直角边是多少？", "answer": "12"},
+      {"question": "等腰直角三角形的直角边为 1，斜边的平方是多少？", "answer": "2"}
+    ],
+    "advanced": [
+      {"question": "直角三角形斜边为 10，两直角边之差为 2，求较短的直角边。", "answer": "6"}
+    ]
+  },
+  "平行四边形": {
+    "basic": [
+      {"question": "平行四边形的对边相等吗？（是/否）", "answer": "是"},
+      {"question": "平行四边形的对角是什么关系？", "answer": "相等"},
+      {"question": "平行四边形 ABCD 中 ∠A = 70°，∠C = 多少度？", "answer": "70"}
+    ],
+    "consolidation": [
+      {"question": "平行四边形周长为 30，一边长为 7，邻边长是多少？", "answer": "8"},
+      {"question": "平行四边形的对角线互相平分吗？（是/否）", "answer": "是"}
+    ],
+    "advanced": [
+      {"question": "平行四边形相邻两内角之比为 2:3，求较小的角。", "answer": "72"}
+    ]
+  },
+  "一次函数": {
+    "basic": [
+      {"question": "直线 y = 2x + 1 与 y 轴的交点坐标是什么？", "answer": "(0, 1)"},
+      {"question": "直线 y = -x + 3 中，y 随 x 的增大而增大还是减小？", "answer": "减小"},
+      {"question": "点 (2, 5) 是否在直线 y = 2x + 1 上？（是/否）", "answer": "是"}
+    ],
+    "consolidation": [
+      {"question": "直线 y = kx + 2 经过点 (1, 5)，求 k。", "answer": "3"},
+      {"question": "直线 y = 2x + b 与 y = x + 4 的交点横坐标为 1，求 b。", "answer": "3"}
+    ],
+    "advanced": [
+      {"question": "两条直线 y = 2x + 1 与 y = -x + 7 的交点坐标是什么？", "answer": "(2, 5)"}
+    ]
+  },
   "二次函数": {
     "basic": [
       {"question": "抛物线 y = x² - 4x + 3 的顶点坐标是什么？", "answer": "(2, -1)"},
@@ -16,18 +240,102 @@
       {"question": "若 y = x² - 4x + c 的最小值为 -3，求 c。", "answer": "1"}
     ]
   },
-  "一次函数": {
+  "圆": {
     "basic": [
-      {"question": "直线 y = 2x + 1 与 y 轴的交点坐标是什么？", "answer": "(0, 1)"},
-      {"question": "直线 y = -x + 3 中，y 随 x 的增大而增大还是减小？", "answer": "减小"},
-      {"question": "点 (2, 5) 是否在直线 y = 2x + 1 上？（是/否）", "answer": "是"}
+      {"question": "半径为 3 的圆的直径是多少？", "answer": "6"},
+      {"question": "同圆中的半径都相等吗？（是/否）", "answer": "是"},
+      {"question": "圆周率 π 保留两位小数约是多少？", "answer": "3.14"}
     ],
     "consolidation": [
-      {"question": "直线 y = kx + 2 经过点 (1, 5)，求 k。", "answer": "3"},
-      {"question": "直线 y = 2x + b 与 y = x + 4 的交点横坐标为 1，求 b。", "answer": "3"}
+      {"question": "半径为 5 的圆的周长是多少？（结果保留 π）", "answer": "10π"},
+      {"question": "直径为 10 的圆的面积是多少？（结果保留 π）", "answer": "25π"}
     ],
     "advanced": [
-      {"question": "两条直线 y = 2x + 1 与 y = -x + 7 的交点坐标是什么？", "answer": "(2, 5)"}
+      {"question": "圆的半径为 2，60° 圆心角所对的弧长是多少？（结果保留 π）", "answer": "2π/3"}
+    ]
+  },
+  "概率": {
+    "basic": [
+      {"question": "掷一枚均匀硬币，正面朝上的概率是多少？", "answer": "1/2"},
+      {"question": "必然事件的概率是多少？", "answer": "1"},
+      {"question": "掷一枚均匀骰子，掷出 6 点的概率是多少？", "answer": "1/6"}
+    ],
+    "consolidation": [
+      {"question": "袋中有 3 个红球和 2 个白球，随机摸出一个球是红球的概率是多少？", "answer": "3/5"},
+      {"question": "同时掷两枚均匀硬币，两枚都正面朝上的概率是多少？", "answer": "1/4"}
+    ],
+    "advanced": [
+      {"question": "同时掷两枚均匀骰子，点数之和为 7 的概率是多少？", "answer": "1/6"}
+    ]
+  },
+  "相似三角形": {
+    "basic": [
+      {"question": "相似三角形的对应角相等吗？（是/否）", "answer": "是"},
+      {"question": "两个相似三角形的相似比为 1:2，对应边的比是多少？", "answer": "1:2"},
+      {"question": "所有的等边三角形都相似吗？（是/否）", "answer": "是"}
+    ],
+    "consolidation": [
+      {"question": "△ABC ∽ △DEF，AB = 3，DE = 6，BC = 4，求 EF。", "answer": "8"},
+      {"question": "两个相似三角形的相似比为 1:3，周长之比是多少？", "answer": "1:3"}
+    ],
+    "advanced": [
+      {"question": "两个相似三角形的相似比为 1:2，面积之比是多少？", "answer": "1:4"}
+    ]
+  },
+  "全等三角形": {
+    "basic": [
+      {"question": "判定方法 SAS 指的是两边和它们的____对应相等（填：夹角/对角）。", "answer": "夹角"},
+      {"question": "全等三角形的对应边有什么关系？", "answer": "相等"},
+      {"question": "判定方法 ASA 指的是两角和它们的____对应相等（填：夹边/对边）。", "answer": "夹边"}
+    ],
+    "consolidation": [
+      {"question": "已知 AB = AC，AD 平分 ∠BAC 交 BC 于 D，则 BD 与 CD 的大小关系是什么？", "answer": "相等"},
+      {"question": "△ABC ≌ △A'B'C'，AB = 5，则 A'B' = ?", "answer": "5"}
+    ],
+    "advanced": [
+      {"question": "△ABC ≌ △DEF，∠A = 70°，∠B = 50°，求 ∠F。", "answer": "60"}
+    ]
+  },
+  "锐角三角函数": {
+    "basic": [
+      {"question": "sin 30° = ?", "answer": "1/2"},
+      {"question": "tan 45° = ?", "answer": "1"},
+      {"question": "cos 60° = ?", "answer": "1/2"}
+    ],
+    "consolidation": [
+      {"question": "直角三角形中，一个锐角的对边为 3，斜边为 5，这个角的正弦值是多少？", "answer": "3/5"},
+      {"question": "计算：sin 30° + cos 60° = ?", "answer": "1"}
+    ],
+    "advanced": [
+      {"question": "等腰直角三角形中，一个锐角的正切值是多少？", "answer": "1"}
+    ]
+  },
+  "因式分解": {
+    "basic": [
+      {"question": "分解因式：x² - 9 = ?", "answer": "(x+3)(x-3)"},
+      {"question": "分解因式：x² + 2x + 1 = ?", "answer": "(x+1)²"},
+      {"question": "分解因式：3x + 3y = ?", "answer": "3(x+y)"}
+    ],
+    "consolidation": [
+      {"question": "分解因式：x² - 4x + 4 = ?", "answer": "(x-2)²"},
+      {"question": "分解因式：2x² - 8 = ?", "answer": "2(x+2)(x-2)"}
+    ],
+    "advanced": [
+      {"question": "分解因式：x³ - x = ?", "answer": "x(x+1)(x-1)"}
+    ]
+  },
+  "轴对称": {
+    "basic": [
+      {"question": "等腰三角形是轴对称图形吗？（是/否）", "answer": "是"},
+      {"question": "线段有几条对称轴？", "answer": "2"},
+      {"question": "圆有多少条对称轴？", "answer": "无数条"}
+    ],
+    "consolidation": [
+      {"question": "点 (1, 2) 关于 y 轴对称的点的坐标是什么？", "answer": "(-1, 2)"},
+      {"question": "角是轴对称图形，它有几条对称轴？", "answer": "1"}
+    ],
+    "advanced": [
+      {"question": "等腰三角形底边上的高与底边上的中线有什么位置关系？", "answer": "重合"}
     ]
   },
   "几何证明": {
@@ -42,17 +350,6 @@
     ],
     "advanced": [
       {"question": "在 △ABC 中，∠A = 50°，∠B 比 ∠C 大 10°，求 ∠C。", "answer": "60"}
-    ]
-  },
-  "全等三角形": {
-    "basic": [
-      {"question": "判定方法 SAS 指的是两边和它们的____对应相等（填：夹角/对角）。", "answer": "夹角"}
-    ],
-    "consolidation": [
-      {"question": "已知 AB = AC，AD 平分 ∠BAC 交 BC 于 D，则 BD 与 CD 的大小关系是什么？", "answer": "相等"}
-    ],
-    "advanced": [
-      {"question": "△ABC ≌ △DEF，∠A = 70°，∠B = 50°，求 ∠F。", "answer": "60"}
     ]
   },
   "_通用": {
