@@ -1,3 +1,4 @@
+from app.services.mastery_service import MASTERY_MAX, MASTERY_MIN
 from tests.test_students import create_student
 
 
@@ -79,3 +80,37 @@ async def test_submit_rejects_duplicate_item_id(client):
 async def test_submit_missing_homework_404(client):
     resp = await client.post("/homework/999/submit", json={"results": [{"item_id": 1, "correct": True}]})
     assert resp.status_code == 404
+
+
+async def test_submit_caps_mastery_at_max(client):
+    student = await create_student(client)
+    homework = await create_homework(client, student["id"])
+    results = [
+        {"item_id": 1, "correct": True},
+        {"item_id": 2, "correct": True},
+        {"item_id": 3, "correct": True},
+    ]
+    for _ in range(15):
+        resp = await client.post(f"/homework/{homework['id']}/submit", json={"results": results})
+        assert resp.status_code == 200
+    profile = (await client.get(f"/students/{student['id']}/profile")).json()
+    kps = {kp["name"]: kp["mastery"] for kp in profile["knowledge_points"]}
+    assert kps["一次函数"] == MASTERY_MAX
+    assert kps["几何证明"] == MASTERY_MAX
+
+
+async def test_submit_floors_mastery_at_min(client):
+    student = await create_student(client)
+    homework = await create_homework(client, student["id"])
+    results = [
+        {"item_id": 1, "correct": False},
+        {"item_id": 2, "correct": False},
+        {"item_id": 3, "correct": False},
+    ]
+    for _ in range(15):
+        resp = await client.post(f"/homework/{homework['id']}/submit", json={"results": results})
+        assert resp.status_code == 200
+    profile = (await client.get(f"/students/{student['id']}/profile")).json()
+    kps = {kp["name"]: kp["mastery"] for kp in profile["knowledge_points"]}
+    assert kps["一次函数"] == MASTERY_MIN
+    assert kps["几何证明"] == MASTERY_MIN

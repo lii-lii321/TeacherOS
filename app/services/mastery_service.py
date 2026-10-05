@@ -36,7 +36,7 @@ async def apply_grading(db: AsyncSession, student_id: int, items: list[dict], re
     for kp_name, marks in per_kp.items():
         kp = await upsert_kp(db, student_id, kp_name)
         observed = round(100 * sum(1 for m in marks if m) / len(marks))
-        kp.mastery = int(round(kp.mastery * 0.7 + observed * 0.3))
+        kp.mastery = min(MASTERY_MAX, max(MASTERY_MIN, int(round(kp.mastery * 0.7 + observed * 0.3))))
         db.add(MasteryLog(student_id=student_id, name=kp_name, mastery=kp.mastery, observed=observed))
         updates.append(kp)
 
