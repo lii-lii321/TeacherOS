@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models import Homework
 from app.routers.students import get_student_or_404
-from app.schemas.homework import GradeOut, HomeworkCreate, HomeworkOut, SubmitResults
+from app.schemas.homework import GradeOut, HomeworkCreate, HomeworkOut, SubmitAnswers, SubmitItem, SubmitResults
 from app.services import homework_service
 
 router = APIRouter(prefix="/homework", tags=["homework"])
@@ -46,6 +46,29 @@ async def submit_homework(homework_id: int, payload: SubmitResults, db: AsyncSes
     if homework is None:
         raise HTTPException(status_code=404, detail="homework not found")
     accuracy, updates = await homework_service.grade_homework(db, homework, payload.results)
+    return GradeOut(
+        homework_id=homework.id,
+        accuracy=accuracy,
+        knowledge_updates=[{"name": kp.name, "mastery": kp.mastery} for kp in updates],
+    )
+
+
+@router.post("/{homework_id}/submit-answers", response_model=GradeOut)
+async def submit_answers(homework_id: int, payload: SubmitAnswers, db: AsyncSession = Depends(get_db)):
+    homework = await db.get(Homework, homework_id)
+    if homework is None:
+        raise HTTPException(status_code=404, detail="homework not found")
+    items = homework.items or []
+    if any(not isinstance(item, dict) or not item.get("answer") for item in items):
+        raise HTTPException(status_code=409, detail="homework has no answer key; use /submit with manual results")
+    if len(payload.answers) != len(items):
+        raise HTTPException(status_code=422, detail=f"expected {len(items)} answers, got {len(payload.answers)}")
+
+    results = [
+        SubmitItem(item_id=int(item["id"]), correct=homework_service.check_answer(payload.answers[index], item["answer"]))
+        for index, item in enumerate(items)
+    ]
+    accuracy, updates = await homework_service.grade_homework(db, homework, results)
     return GradeOut(
         homework_id=homework.id,
         accuracy=accuracy,

@@ -22,6 +22,10 @@ class SubmitResults(BaseModel):
     results: list[SubmitItem] = Field(min_length=1)
 
 
+class SubmitAnswers(BaseModel):
+    answers: list[str] = Field(min_length=1)
+
+
 class HomeworkOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 import app.models  # noqa: F401  (register ORM metadata before create_all)
 from app.config import settings
 from app.database import Base, engine
-from app.routers import business, classes, copilot, homework, students
+from app.routers import business, classes, copilot, homework, questions, students
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,7 +15,7 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title=settings.app_name, version="0.2.0", lifespan=lifespan)
+app = FastAPI(title=settings.app_name, version="0.3.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,6 +28,7 @@ app.include_router(classes.router)
 app.include_router(copilot.router)
 app.include_router(homework.router)
 app.include_router(business.router)
+app.include_router(questions.router)
 
 
 @app.get("/healthz")

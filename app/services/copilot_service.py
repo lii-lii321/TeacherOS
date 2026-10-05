@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import ClassSession, Homework, Student
-from app.services import mastery_service
+from app.services import mastery_service, question_bank
 from app.services.llm.provider import get_provider
 
 KP_TOPICS = [
@@ -143,19 +143,24 @@ async def enrich_with_llm(note: str, base: dict) -> dict:
         return base
 
 
-def generate_homework_draft(structured: dict) -> list[dict]:
+def generate_homework_draft(structured: dict, offset: int = 0) -> list[dict]:
     kps = structured.get("knowledge_points") or []
     weak = structured.get("weak_knowledge_points") or kps[:1]
     items: list[dict] = []
 
     def add(kp: str, difficulty: str, count: int) -> None:
-        for _ in range(count):
-            items.append({
+        picked = question_bank.pick_questions(kp, difficulty, count, offset=offset)
+        for index in range(count):
+            bank_item = picked[index] if index < len(picked) else None
+            entry = {
                 "id": len(items) + 1,
                 "knowledge_point": kp,
                 "difficulty": difficulty,
-                "question": f"【{kp}·{difficulty}】题目内容待题库接入",
-            })
+                "question": bank_item["question"] if bank_item else f"【{kp}·{difficulty}】题目内容待题库接入",
+            }
+            if bank_item and bank_item.get("answer"):
+                entry["answer"] = bank_item["answer"]
+            items.append(entry)
 
     if not kps:
         add("综合", "basic", 5)
@@ -222,7 +227,7 @@ async def process_lesson_note(
         weak_names = [kp.name for kp in lowest if kp.mastery < 70] or [kp.name for kp in lowest[:1]]
     structured["next_lesson_plan"] = build_next_lesson_plan(structured, weak_names)
 
-    draft = generate_homework_draft(structured)
+    draft = generate_homework_draft(structured, offset=student.id)
     structured["homework"] = {"count": len(draft), "estimated_minutes": len(draft) * 4}
     message = generate_parent_message(student, structured)
 
