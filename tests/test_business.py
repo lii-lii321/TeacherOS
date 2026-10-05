@@ -39,3 +39,20 @@ async def test_summary_invalid_month(client):
 async def test_payment_missing_student(client):
     resp = await client.post("/payments", json={"student_id": 999, "amount": 100})
     assert resp.status_code == 404
+
+
+async def test_payments_list_with_filter(client):
+    a = await create_student(client, name="A同学")
+    b = await create_student(client, name="B同学")
+    await client.post("/payments", json={"student_id": a["id"], "amount": 300, "kind": "income"})
+    await client.post("/payments", json={"student_id": b["id"], "amount": 200, "kind": "income"})
+
+    resp = await client.get("/payments")
+    assert resp.status_code == 200
+    listed = resp.json()
+    assert len(listed) == 2
+    assert listed[0]["student_id"] == b["id"]
+    assert listed[0]["amount"] == 200
+
+    only_a = await client.get("/payments", params={"student_id": a["id"]})
+    assert [(p["student_id"], p["amount"]) for p in only_a.json()] == [(a["id"], 300)]

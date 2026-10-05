@@ -114,3 +114,16 @@ async def test_submit_floors_mastery_at_min(client):
     kps = {kp["name"]: kp["mastery"] for kp in profile["knowledge_points"]}
     assert kps["一次函数"] == MASTERY_MIN
     assert kps["几何证明"] == MASTERY_MIN
+
+
+async def test_list_homework_filters_by_student(client):
+    first = await create_student(client, name="甲同学")
+    second = await create_student(client, name="乙同学")
+    await create_homework(client, first["id"])
+    await create_homework(client, second["id"])
+
+    listed = await client.get("/homework")
+    assert {hw["student_id"] for hw in listed.json()} == {first["id"], second["id"]}
+
+    only_first = await client.get("/homework", params={"student_id": first["id"]})
+    assert [hw["student_id"] for hw in only_first.json()] == [first["id"]]

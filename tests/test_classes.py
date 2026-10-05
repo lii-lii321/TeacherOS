@@ -24,3 +24,20 @@ async def test_create_for_missing_student(client):
 async def test_get_missing_session(client):
     resp = await client.get("/classes/999")
     assert resp.status_code == 404
+
+
+async def test_get_session_by_id(client):
+    student = await create_student(client)
+    created = (
+        await client.post(
+            "/classes",
+            json={"student_id": student["id"], "topic": "全等三角形", "understanding": 5},
+        )
+    ).json()
+
+    resp = await client.get(f"/classes/{created['id']}")
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body["id"] == created["id"]
+    assert body["topic"] == "全等三角形"
+    assert body["student_id"] == student["id"]
