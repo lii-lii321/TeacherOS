@@ -45,6 +45,12 @@ async def submit_homework(homework_id: int, payload: SubmitResults, db: AsyncSes
     homework = await db.get(Homework, homework_id)
     if homework is None:
         raise HTTPException(status_code=404, detail="homework not found")
+    valid_ids = {it["id"] for it in (homework.items or []) if isinstance(it, dict)}
+    seen: set[int] = set()
+    for r in payload.results:
+        if r.item_id not in valid_ids or r.item_id in seen:
+            raise HTTPException(status_code=422, detail="results contain unknown or duplicate item_id")
+        seen.add(r.item_id)
     accuracy, updates = await homework_service.grade_homework(db, homework, payload.results)
     return GradeOut(
         homework_id=homework.id,

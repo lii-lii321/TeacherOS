@@ -54,18 +54,26 @@ async def test_submit_updates_mastery_and_profile(client):
     assert profile["homework_count"] == 1
 
 
-async def test_submit_ignores_unknown_item_ids(client):
+async def test_submit_rejects_unknown_item_ids(client):
     student = await create_student(client)
     homework = await create_homework(client, student["id"])
     resp = await client.post(
         f"/homework/{homework['id']}/submit",
         json={"results": [{"item_id": 1, "correct": True}, {"item_id": 99, "correct": True}]},
     )
-    assert resp.status_code == 200
-    data = resp.json()
-    assert data["accuracy"] == 1.0
-    updates = {u["name"]: u["mastery"] for u in data["knowledge_updates"]}
-    assert updates == {"一次函数": 65}
+    assert resp.status_code == 422
+    assert resp.json()["detail"] == "results contain unknown or duplicate item_id"
+
+
+async def test_submit_rejects_duplicate_item_id(client):
+    student = await create_student(client)
+    homework = await create_homework(client, student["id"])
+    resp = await client.post(
+        f"/homework/{homework['id']}/submit",
+        json={"results": [{"item_id": 1, "correct": True}, {"item_id": 1, "correct": False}]},
+    )
+    assert resp.status_code == 422
+    assert resp.json()["detail"] == "results contain unknown or duplicate item_id"
 
 
 async def test_submit_missing_homework_404(client):
