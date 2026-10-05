@@ -69,3 +69,18 @@ async def test_multiple_knowledge_points_detected(client):
     assert "一次函数" in kps
     assert "几何证明" in kps
     assert resp.json()["structured"]["performance_score"] == 2
+
+
+async def test_lesson_note_homework_questions_vary(client):
+    student = await create_student(client)
+    first = (
+        await client.post("/copilot/lesson-note", json={"student_id": student["id"], "note": NOTE})
+    ).json()
+    second = (
+        await client.post("/copilot/lesson-note", json={"student_id": student["id"], "note": NOTE})
+    ).json()
+
+    first_questions = [item["question"] for item in first["homework"]["items"]]
+    second_questions = [item["question"] for item in second["homework"]["items"]]
+    assert first_questions and second_questions
+    assert first_questions != second_questions

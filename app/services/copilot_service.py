@@ -2,6 +2,7 @@ import json
 import re
 from dataclasses import dataclass
 
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import ClassSession, Homework, Student
@@ -227,7 +228,8 @@ async def process_lesson_note(
         weak_names = [kp.name for kp in lowest if kp.mastery < 70] or [kp.name for kp in lowest[:1]]
     structured["next_lesson_plan"] = build_next_lesson_plan(structured, weak_names)
 
-    draft = generate_homework_draft(structured, offset=student.id)
+    hw_count = await db.scalar(select(func.count(Homework.id)).where(Homework.student_id == student.id)) or 0
+    draft = generate_homework_draft(structured, offset=student.id + hw_count)
     structured["homework"] = {"count": len(draft), "estimated_minutes": len(draft) * 4}
     message = generate_parent_message(student, structured)
 
