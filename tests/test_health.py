@@ -1,3 +1,6 @@
+from main import app
+
+
 async def test_healthz(client):
     resp = await client.get("/healthz")
     assert resp.status_code == 200
@@ -7,5 +10,7 @@ async def test_healthz(client):
 async def test_root(client):
     resp = await client.get("/")
     assert resp.status_code == 200
-    assert resp.json()["app"] == "TeacherOS"
-    assert resp.json()["docs"] == "/docs"
+    body = resp.json()
+    assert body["app"] == "TeacherOS"
+    assert body["version"] == app.version
+    assert body["docs"] == "/docs"
