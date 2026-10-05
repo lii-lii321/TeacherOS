@@ -13,8 +13,10 @@ client acquisition CRM, Data Analyst Agent → data-science engine).
   (knowledge-point mastery, weak points, recent homework accuracy).
 - **AI Copilot** — paste a raw lesson note (`今天讲了二次函数，学生顶点式理解一般，做10题错3题`);
   the copilot extracts topic/knowledge points/performance/error stats, drafts
-  homework, and generates a parent-ready WeChat message. Rule-based by default
-  (zero API key needed), optionally enriched by any OpenAI-compatible LLM.
+  homework, generates a parent-ready WeChat message, **updates knowledge-point
+  mastery from the lesson signal, and produces a next-lesson plan** (review +
+  practice + suggested flow). Rule-based by default (zero API key needed),
+  optionally enriched by any OpenAI-compatible LLM.
 - **Homework & mastery engine** — per-item grading updates knowledge-point
   mastery via an EWMA update (`new = 0.7*old + 0.3*observed`).
 - **Business** — payments, monthly income/expense, active/new students,
@@ -77,6 +79,7 @@ dashboard.py             Streamlit UI
 | --- | --- | --- |
 | POST/GET/PATCH/DELETE | `/students` | manage students (DELETE = archive) |
 | GET | `/students/{id}/profile` | mastery, weak points, recent accuracy |
+| GET | `/students/{id}/trends` | accuracy series + direction, mastery history, recent sessions |
 | POST/GET | `/classes` | lesson records |
 | POST | `/copilot/lesson-note` | note → session + homework + parent message |
 | POST | `/homework/{id}/submit` | grade items, update mastery |
@@ -85,9 +88,9 @@ dashboard.py             Streamlit UI
 ## Roadmap
 
 - [x] Phase 1 MVP — students, sessions, copilot note parsing, parent messages
-- [x] Phase 2 (start) — knowledge-point mastery engine + student profile
-- [ ] Phase 2 (rest) — learning trends, per-chapter reports
-- [ ] Phase 3 — multi-step copilot (note → plan → homework → feedback loop)
+- [x] Phase 2 — mastery engine, lesson-signal adjustments, mastery history, trends endpoint
+- [x] Phase 3 (start) — next-lesson plan generation in copilot
+- [ ] Phase 3 (rest) — multi-step copilot (note → plan → homework → feedback loop)
 - [ ] Phase 4 — renewal/retention analytics, source tracking
 - [ ] Phase 5 — real users (first 10 tutors), question bank integration
 

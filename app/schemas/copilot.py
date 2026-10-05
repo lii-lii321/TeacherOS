@@ -14,5 +14,6 @@ class CopilotResultOut(BaseModel):
     structured: dict
     parent_message: str
     homework_estimated_minutes: int
+    next_lesson_plan: dict = {}
     session: ClassSessionOut | None = None
     homework: HomeworkOut | None = None

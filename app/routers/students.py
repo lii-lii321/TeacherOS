@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models import Student
 from app.schemas.students import StudentCreate, StudentOut, StudentProfileOut, StudentUpdate
-from app.services import mastery_service
+from app.services import mastery_service, trend_service
 
 router = APIRouter(prefix="/students", tags=["students"])
 
@@ -60,3 +60,9 @@ async def archive_student(student_id: int, db: AsyncSession = Depends(get_db)):
 async def student_profile(student_id: int, db: AsyncSession = Depends(get_db)):
     student = await get_student_or_404(db, student_id)
     return await mastery_service.build_profile(db, student)
+
+
+@router.get("/{student_id}/trends")
+async def student_trends(student_id: int, db: AsyncSession = Depends(get_db)):
+    student = await get_student_or_404(db, student_id)
+    return await trend_service.build_trends(db, student)

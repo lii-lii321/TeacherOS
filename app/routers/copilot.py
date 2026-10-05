@@ -18,6 +18,7 @@ async def lesson_note(payload: LessonNoteIn, db=Depends(get_db)):
         structured=outcome.structured,
         parent_message=outcome.parent_message,
         homework_estimated_minutes=(outcome.structured.get("homework") or {}).get("estimated_minutes", 0),
+        next_lesson_plan=outcome.structured.get("next_lesson_plan", {}),
         session=outcome.session,
         homework=outcome.homework,
     )

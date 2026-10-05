@@ -28,6 +28,23 @@ async def test_lesson_note_creates_records(client):
     assert len(data["homework"]["items"]) >= 5
     assert data["homework_estimated_minutes"] > 0
 
+    plan = data["next_lesson_plan"]
+    assert plan["review"] == ["二次函数"]
+    assert "二次函数" in plan["message"]
+    assert plan["estimated_minutes"] > 0
+
+
+async def test_lesson_note_updates_mastery(client):
+    student = await create_student(client)
+    resp = await client.post(
+        "/copilot/lesson-note", json={"student_id": student["id"], "note": NOTE}
+    )
+    assert resp.status_code == 200
+
+    profile = (await client.get(f"/students/{student['id']}/profile")).json()
+    kps = {kp["name"]: kp["mastery"] for kp in profile["knowledge_points"]}
+    assert kps.get("二次函数") == 60
+
 
 async def test_lesson_note_dry_run(client):
     student = await create_student(client)

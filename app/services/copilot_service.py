@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import ClassSession, Homework, Student
+from app.services import mastery_service
 from app.services.llm.provider import get_provider
 
 KP_TOPICS = [
@@ -187,6 +188,18 @@ def generate_parent_message(student: Student, structured: dict) -> str:
     )
 
 
+def build_next_lesson_plan(structured: dict, weak_names: list[str]) -> dict:
+    kps = structured.get("knowledge_points") or []
+    review = list(dict.fromkeys(weak_names or kps[:1]))[:2]
+    practice = [kp for kp in kps if kp not in review][:2]
+    focus = review[0] if review else (practice[0] if practice else "本阶段内容")
+    if practice:
+        message = f"下节课先复习「{focus}」，再针对「{'、'.join(practice)}」做巩固练习，最后预留 10 分钟小结与答疑。"
+    else:
+        message = f"下节课先复习「{focus}」，再做巩固练习，最后预留 10 分钟小结与答疑。"
+    return {"review": review, "practice": practice, "estimated_minutes": 90, "message": message}
+
+
 @dataclass
 class CopilotOutcome:
     structured: dict
@@ -199,6 +212,16 @@ async def process_lesson_note(
     db: AsyncSession, student: Student, note: str, create_records: bool = True
 ) -> CopilotOutcome:
     structured = await enrich_with_llm(note, build_structured(note))
+
+    weak_names = list(structured.get("weak_knowledge_points") or [])
+    if create_records:
+        await mastery_service.adjust_from_lesson(
+            db, student.id, structured.get("knowledge_points") or [], int(structured.get("performance_score", 3))
+        )
+        lowest = await mastery_service.lowest_mastery(db, student.id, 3)
+        weak_names = [kp.name for kp in lowest if kp.mastery < 70] or [kp.name for kp in lowest[:1]]
+    structured["next_lesson_plan"] = build_next_lesson_plan(structured, weak_names)
+
     draft = generate_homework_draft(structured)
     structured["homework"] = {"count": len(draft), "estimated_minutes": len(draft) * 4}
     message = generate_parent_message(student, structured)
