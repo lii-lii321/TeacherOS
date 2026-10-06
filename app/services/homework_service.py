@@ -7,8 +7,12 @@ from app.services import mastery_service
 from app.utils.clock import utcnow
 
 
+_FULLWIDTH = str.maketrans("０１２３４５６７８９．", "0123456789.")
+_PUNCT = r"[\s，。,；;：:、'\"（）()]+"
+
+
 def _normalize(text: str) -> str:
-    return re.sub(r"[\s，。,．.；;：:、'\"（）()]+", "", str(text)).lower()
+    return re.sub(_PUNCT, "", str(text).translate(_FULLWIDTH)).lower()
 
 
 def _last_number(text: str) -> float | None:
@@ -18,7 +22,8 @@ def _last_number(text: str) -> float | None:
 
 def check_answer(given: str, expected: str) -> bool:
     """Normalized string equality, falling back to numeric comparison of the
-    last number in each answer (so "x=3" and "3" both match)."""
+    last number in each answer (so "x=3" and "3" both match). Decimal points
+    are preserved so "8.5" never matches "85"."""
     if given is None or expected is None:
         return False
     normalized_given, normalized_expected = _normalize(given), _normalize(expected)

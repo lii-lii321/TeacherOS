@@ -1,5 +1,24 @@
+from app.services.homework_service import check_answer
 from app.services.mastery_service import MASTERY_MAX, MASTERY_MIN
 from tests.test_students import create_student
+
+
+def test_check_answer_keeps_decimal_point():
+    assert check_answer("8.5", "8.5") is True
+    assert check_answer("85", "8.5") is False
+    assert check_answer("5", "0.5") is False
+    assert check_answer("答案是85", "答案是8.5") is False
+    assert check_answer("x=1.25", "1.25") is True
+    assert check_answer("π≈3.14", "3.14") is True
+    assert check_answer("8.50", "8.5") is True
+    assert check_answer("8．5", "8.5") is True
+
+
+def test_check_answer_basic_equivalence():
+    assert check_answer("x=3", "3") is True
+    assert check_answer("答案 3。", "3") is True
+    assert check_answer("不知道", "3") is False
+    assert check_answer(None, "3") is False
 
 
 async def create_homework(client, student_id):
