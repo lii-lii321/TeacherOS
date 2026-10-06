@@ -77,9 +77,12 @@ async def test_submit_answers_partial_and_number_match(client):
     graded = resp.json()
     assert 0 < graded["accuracy"] < 1
 
+    # 作业已 graded，数值等价判卷改在新作业上验证（同一作业重复提交会被 409 拦截）
+    _, other = await create_lesson_homework(client)
+    other_items = other["homework"]["items"]
     numeric = await client.post(
-        f"/homework/{homework_id}/submit-answers",
-        json={"answers": ["x=" + item["answer"] for item in items]},
+        f"/homework/{other['homework']['id']}/submit-answers",
+        json={"answers": ["x=" + item["answer"] for item in other_items]},
     )
     assert numeric.status_code == 200
 

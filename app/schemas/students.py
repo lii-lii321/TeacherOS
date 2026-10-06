@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -19,7 +20,7 @@ class StudentUpdate(BaseModel):
     current_score: int | None = Field(default=None, ge=0, le=750)
     target_score: int | None = Field(default=None, ge=0, le=750)
     teacher_note: str | None = None
-    status: str | None = None
+    status: Literal["active", "archived"] | None = None
 
 
 class KnowledgePointOut(BaseModel):

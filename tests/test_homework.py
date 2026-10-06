@@ -103,13 +103,13 @@ async def test_submit_missing_homework_404(client):
 
 async def test_submit_caps_mastery_at_max(client):
     student = await create_student(client)
-    homework = await create_homework(client, student["id"])
     results = [
         {"item_id": 1, "correct": True},
         {"item_id": 2, "correct": True},
         {"item_id": 3, "correct": True},
     ]
     for _ in range(15):
+        homework = await create_homework(client, student["id"])
         resp = await client.post(f"/homework/{homework['id']}/submit", json={"results": results})
         assert resp.status_code == 200
     profile = (await client.get(f"/students/{student['id']}/profile")).json()
@@ -120,13 +120,13 @@ async def test_submit_caps_mastery_at_max(client):
 
 async def test_submit_floors_mastery_at_min(client):
     student = await create_student(client)
-    homework = await create_homework(client, student["id"])
     results = [
         {"item_id": 1, "correct": False},
         {"item_id": 2, "correct": False},
         {"item_id": 3, "correct": False},
     ]
     for _ in range(15):
+        homework = await create_homework(client, student["id"])
         resp = await client.post(f"/homework/{homework['id']}/submit", json={"results": results})
         assert resp.status_code == 200
     profile = (await client.get(f"/students/{student['id']}/profile")).json()
@@ -146,3 +146,40 @@ async def test_list_homework_filters_by_student(client):
 
     only_first = await client.get("/homework", params={"student_id": first["id"]})
     assert [hw["student_id"] for hw in only_first.json()] == [first["id"]]
+
+
+async def test_submit_twice_returns_409(client):
+    student = await create_student(client)
+    homework = await create_homework(client, student["id"])
+    first = await client.post(
+        f"/homework/{homework['id']}/submit",
+        json={"results": [{"item_id": 1, "correct": True}]},
+    )
+    assert first.status_code == 200
+
+    again = await client.post(
+        f"/homework/{homework['id']}/submit",
+        json={"results": [{"item_id": 1, "correct": False}]},
+    )
+    assert again.status_code == 409
+    assert "already graded" in again.json()["detail"]
+
+    graded = (await client.get(f"/homework/{homework['id']}")).json()
+    assert graded["graded"]["correct"] == 1
+
+
+async def test_submit_answers_twice_returns_409(client):
+    student = await create_student(client)
+    homework = await create_homework(client, student["id"])
+    # 无答案键的作业走 /submit-answers 会 409，先通过 /submit 挂上 graded，
+    # 再验证 /submit-answers 同样被守卫拦截。
+    await client.post(
+        f"/homework/{homework['id']}/submit",
+        json={"results": [{"item_id": 1, "correct": True}]},
+    )
+    resp = await client.post(
+        f"/homework/{homework['id']}/submit-answers",
+        json={"answers": ["3", "3", "3"]},
+    )
+    assert resp.status_code == 409
+    assert "already graded" in resp.json()["detail"]

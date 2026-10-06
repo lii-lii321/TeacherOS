@@ -191,6 +191,23 @@ elif page == "AI 助教":
                         f"预计 {result['homework_estimated_minutes']} 分钟"
                     )
 
+            if not structured.get("ai_enriched"):
+                st.caption("本结果由规则解析生成（AI 增强不可用），字段可能不完整。")
+
+            plan = result.get("next_lesson_plan") or {}
+            if plan.get("message"):
+                st.subheader("下节课计划")
+                st.write(plan["message"])
+                parts = []
+                if plan.get("review"):
+                    parts.append("复习：" + "、".join(plan["review"]))
+                if plan.get("practice"):
+                    parts.append("巩固：" + "、".join(plan["practice"]))
+                if plan.get("estimated_minutes"):
+                    parts.append(f"预计 {plan['estimated_minutes']} 分钟")
+                if parts:
+                    st.caption(" ｜ ".join(parts))
+
 
 elif page == "经营":
     st.header("经营")

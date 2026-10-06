@@ -45,6 +45,8 @@ async def submit_homework(homework_id: int, payload: SubmitResults, db: AsyncSes
     homework = await db.get(Homework, homework_id)
     if homework is None:
         raise HTTPException(status_code=404, detail="homework not found")
+    if homework.status == "graded":
+        raise HTTPException(status_code=409, detail="homework already graded; re-grading would double-apply mastery updates")
     valid_ids = {it["id"] for it in (homework.items or []) if isinstance(it, dict)}
     seen: set[int] = set()
     for r in payload.results:
@@ -64,6 +66,8 @@ async def submit_answers(homework_id: int, payload: SubmitAnswers, db: AsyncSess
     homework = await db.get(Homework, homework_id)
     if homework is None:
         raise HTTPException(status_code=404, detail="homework not found")
+    if homework.status == "graded":
+        raise HTTPException(status_code=409, detail="homework already graded; re-grading would double-apply mastery updates")
     items = homework.items or []
     if any(not isinstance(item, dict) or not item.get("answer") for item in items):
         raise HTTPException(status_code=409, detail="homework has no answer key; use /submit with manual results")
