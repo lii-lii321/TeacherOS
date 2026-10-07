@@ -1,3 +1,5 @@
+from typing import Literal
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,7 +29,9 @@ async def create_student(payload: StudentCreate, db: AsyncSession = Depends(get_
 
 
 @router.get("", response_model=list[StudentOut])
-async def list_students(status: str = "active", db: AsyncSession = Depends(get_db)):
+async def list_students(
+    status: Literal["active", "archived", "all"] = "active", db: AsyncSession = Depends(get_db)
+):
     query = select(Student).order_by(Student.id)
     if status != "all":
         query = query.where(Student.status == status)

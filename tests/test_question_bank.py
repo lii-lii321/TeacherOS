@@ -58,6 +58,13 @@ async def test_bank_endpoint_filter(client):
     assert all(item["difficulty"] == "advanced" for item in only_advanced.json())
 
 
+async def test_questions_invalid_difficulty_422(client):
+    resp = await client.get(
+        "/questions", params={"knowledge_point": "二次函数", "difficulty": "basics"}
+    )
+    assert resp.status_code == 422
+
+
 async def test_lesson_note_homework_uses_bank(client):
     _, data = await create_lesson_homework(client)
     items = data["homework"]["items"]

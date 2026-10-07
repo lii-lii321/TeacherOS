@@ -41,6 +41,11 @@ async def test_missing_student_404(client):
     assert resp.status_code == 404
 
 
+async def test_students_invalid_status_422(client):
+    resp = await client.get("/students", params={"status": "archiveds"})
+    assert resp.status_code == 422
+
+
 async def test_profile_empty(client):
     student = await create_student(client)
     resp = await client.get(f"/students/{student['id']}/profile")
