@@ -16,7 +16,10 @@ async def create_homework(payload: HomeworkCreate, db: AsyncSession = Depends(ge
     await get_student_or_404(db, payload.student_id)
     items = []
     for i, item in enumerate(payload.items, start=1):
-        items.append({"id": i, "knowledge_point": item.knowledge_point, "difficulty": item.difficulty, "question": item.question})
+        entry = {"id": i, "knowledge_point": item.knowledge_point, "difficulty": item.difficulty, "question": item.question}
+        if item.answer:
+            entry["answer"] = item.answer
+        items.append(entry)
     homework = Homework(student_id=payload.student_id, title=payload.title, items=items)
     db.add(homework)
     await db.commit()

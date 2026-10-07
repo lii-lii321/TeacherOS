@@ -95,7 +95,7 @@ dashboard.py             Streamlit UI
 | POST/GET | `/classes` | lesson records |
 | GET | `/classes/{id}` | single lesson record |
 | POST | `/copilot/lesson-note` | note → session + homework + parent message |
-| POST/GET | `/homework` | create homework / list (filter by `student_id`) |
+| POST/GET | `/homework` | create homework (items may carry `answer` for auto-grading) / list (filter by `student_id`) |
 | GET | `/homework/{id}` | homework detail with items |
 | POST | `/homework/{id}/submit` | grade items manually, update mastery |
 | POST | `/homework/{id}/submit-answers` | auto-grade by comparing answers (needs answer key) |

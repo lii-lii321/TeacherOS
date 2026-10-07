@@ -5,6 +5,7 @@ class HomeworkItemIn(BaseModel):
     knowledge_point: str = Field(min_length=1)
     difficulty: str = "basic"
     question: str = ""
+    answer: str | None = None
 
 
 class HomeworkCreate(BaseModel):

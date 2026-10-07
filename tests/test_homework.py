@@ -48,6 +48,57 @@ async def test_create_get_homework(client):
     assert got.json()["title"] == "巩固作业"
 
 
+async def test_manual_homework_with_answers_autogrades(client):
+    student = await create_student(client)
+    resp = await client.post(
+        "/homework",
+        json={
+            "student_id": student["id"],
+            "title": "带答案作业",
+            "items": [
+                {"knowledge_point": "一次函数", "question": "1+1=?", "answer": "2"},
+                {"knowledge_point": "二次函数", "question": "2+2=?", "answer": "4"},
+            ],
+        },
+    )
+    assert resp.status_code == 201
+    homework = resp.json()
+    assert [i.get("answer") for i in homework["items"]] == ["2", "4"]
+
+    graded = await client.post(
+        f"/homework/{homework['id']}/submit-answers",
+        json={"answers": ["2", "3"]},
+    )
+    assert graded.status_code == 200
+    data = graded.json()
+    assert data["accuracy"] == 0.5
+    updates = {u["name"]: u["mastery"] for u in data["knowledge_updates"]}
+    assert updates == {"一次函数": 65, "二次函数": 35}
+
+    profile = (await client.get(f"/students/{student['id']}/profile")).json()
+    assert profile["recent_accuracy"] == 0.5
+
+
+async def test_manual_homework_partial_answer_key_still_409(client):
+    student = await create_student(client)
+    resp = await client.post(
+        "/homework",
+        json={
+            "student_id": student["id"],
+            "title": "缺答案作业",
+            "items": [
+                {"knowledge_point": "一次函数", "answer": "2"},
+                {"knowledge_point": "一次函数"},
+            ],
+        },
+    )
+    assert resp.status_code == 201
+    submit = await client.post(
+        f"/homework/{resp.json()['id']}/submit-answers", json={"answers": ["2"]}
+    )
+    assert submit.status_code == 409
+
+
 async def test_submit_updates_mastery_and_profile(client):
     student = await create_student(client)
     homework = await create_homework(client, student["id"])
