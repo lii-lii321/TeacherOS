@@ -141,3 +141,19 @@ async def test_enrich_invalid_json_falls_back_to_rules(monkeypatch):
 
     assert merged == base
     assert merged["ai_enriched"] is False
+
+
+EMPTY_LISTS_REPLY = (
+    '{"topic": "二次函数", "knowledge_points": ["二次函数"],'
+    '"performance_score": 3, "problems": [], "suggestions": []}'
+)
+
+
+async def test_enrich_empty_lists_keep_rule_based_defaults(monkeypatch):
+    _with_provider(monkeypatch, EMPTY_LISTS_REPLY)
+    base = copilot_service.build_structured(NOTE)
+    merged = await copilot_service.enrich_with_llm(NOTE, base)
+
+    assert merged["ai_enriched"] is True
+    assert merged["problems"] == base["problems"]
+    assert merged["suggestions"] == base["suggestions"]

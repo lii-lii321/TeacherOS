@@ -135,9 +135,9 @@ async def enrich_with_llm(note: str, base: dict) -> dict:
             merged["knowledge_points"] = [k for k in dict.fromkeys(cleaned) if k][:12]
         if isinstance(data.get("performance_score"), int) and 1 <= data["performance_score"] <= 5:
             merged["performance_score"] = data["performance_score"]
-        if isinstance(data.get("problems"), list):
+        if isinstance(data.get("problems"), list) and data["problems"]:
             merged["problems"] = [str(p) for p in data["problems"]][:8]
-        if isinstance(data.get("suggestions"), list):
+        if isinstance(data.get("suggestions"), list) and data["suggestions"]:
             merged["suggestions"] = [str(s) for s in data["suggestions"]][:8]
         perf = int(merged.get("performance_score", 3))
         merged["weak_knowledge_points"] = (
