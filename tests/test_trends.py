@@ -43,6 +43,30 @@ async def test_trends_insufficient_data(client):
     assert trends["accuracy_direction"] == "insufficient_data"
     assert trends["accuracy_series"] == []
     assert trends["recent_sessions"] == []
+    assert "先记录" in trends["suggestion"]
+
+
+async def test_trends_declining_direction_and_suggestion(client):
+    student = await create_student(client)
+    await add_graded_homework(client, student["id"], [True, True, True])
+    await add_graded_homework(client, student["id"], [True, True, True])
+    await add_graded_homework(client, student["id"], [False, False, False])
+    await add_graded_homework(client, student["id"], [False, False, False])
+
+    trends = (await client.get(f"/students/{student['id']}/trends")).json()
+    assert trends["accuracy_direction"] == "declining"
+    assert trends["suggestion"].startswith("正确率呈下降趋势")
+    assert "先补基础" in trends["suggestion"]
+
+
+async def test_trends_flat_direction(client):
+    student = await create_student(client)
+    await add_graded_homework(client, student["id"], [True, False, True, False])
+    await add_graded_homework(client, student["id"], [True, False, True, False])
+
+    trends = (await client.get(f"/students/{student['id']}/trends")).json()
+    assert trends["accuracy_direction"] == "flat"
+    assert trends["suggestion"].startswith("正确率基本平稳")
 
 
 async def test_trends_missing_student_404(client):
