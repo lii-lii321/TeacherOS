@@ -157,3 +157,22 @@ async def test_enrich_empty_lists_keep_rule_based_defaults(monkeypatch):
     assert merged["ai_enriched"] is True
     assert merged["problems"] == base["problems"]
     assert merged["suggestions"] == base["suggestions"]
+
+
+OUT_OF_BANK_REPLY = (
+    '{"topic": "数列与导数", "knowledge_points": ["数列", "导数"],'
+    '"performance_score": 2, "problems": [], "suggestions": []}'
+)
+
+
+async def test_out_of_bank_kps_draft_questions_unique(client, monkeypatch):
+    _with_provider(monkeypatch, OUT_OF_BANK_REPLY)
+    student = await create_student(client)
+    resp = await client.post(
+        "/copilot/lesson-note", json={"student_id": student["id"], "note": "讲了数列和导数，掌握得不太好"}
+    )
+    assert resp.status_code == 200
+    items = resp.json()["homework"]["items"]
+    assert len(items) >= 5
+    questions = [i["question"] for i in items]
+    assert len(set(questions)) == len(questions), questions

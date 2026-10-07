@@ -153,9 +153,10 @@ def generate_homework_draft(structured: dict, offset: int = 0) -> list[dict]:
     kps = structured.get("knowledge_points") or []
     weak = structured.get("weak_knowledge_points") or kps[:1]
     items: list[dict] = []
+    used: set[str] = set()
 
     def add(kp: str, difficulty: str, count: int) -> None:
-        picked = question_bank.pick_questions(kp, difficulty, count, offset=offset)
+        picked = question_bank.pick_questions(kp, difficulty, count, offset=offset, exclude=used)
         for index in range(count):
             bank_item = picked[index] if index < len(picked) else None
             entry = {
@@ -166,6 +167,8 @@ def generate_homework_draft(structured: dict, offset: int = 0) -> list[dict]:
             }
             if bank_item and bank_item.get("answer"):
                 entry["answer"] = bank_item["answer"]
+            if bank_item:
+                used.add(bank_item["question"])
             items.append(entry)
 
     if not kps:

@@ -30,7 +30,19 @@ def list_questions(knowledge_point: str | None = None, difficulty: str | None = 
     return result
 
 
-def pick_questions(kp: str, difficulty: str, count: int, offset: int = 0) -> list[dict]:
+def pick_questions(
+    kp: str, difficulty: str, count: int, offset: int = 0, exclude: set[str] | None = None
+) -> list[dict]:
     bank = _load()
     pool = bank.get(kp, {}).get(difficulty) or bank.get(FALLBACK_KEY, {}).get(difficulty) or []
-    return [dict(pool[(offset + index) % len(pool)]) for index in range(count)] if pool else []
+    if not pool:
+        return []
+    used = exclude or set()
+    rotated = pool[offset % len(pool):] + pool[:offset % len(pool)]
+    fresh = [item for item in rotated if item["question"] not in used]
+    picked = [dict(item) for item in fresh[:count]]
+    index = 0
+    while len(picked) < count:
+        picked.append(dict(rotated[index % len(rotated)]))
+        index += 1
+    return picked

@@ -358,14 +358,18 @@
       {"question": "解方程：3x - 6 = 12，求 x。", "answer": "6"},
       {"question": "计算：(-2)³ = ?", "answer": "-8"},
       {"question": "计算：15 × 4 - 48 ÷ 6 = ?", "answer": "52"},
-      {"question": "解方程：5x - 9 = 26，求 x。", "answer": "7"}
+      {"question": "解方程：5x - 9 = 26，求 x。", "answer": "7"},
+      {"question": "计算：7 × 8 - 16 = ?", "answer": "40"}
     ],
     "consolidation": [
       {"question": "解方程组 x + y = 7，x - y = 3，求 x。", "answer": "5"},
-      {"question": "计算：(-12) ÷ 3 + (-8) × (-2) = ?", "answer": "12"}
+      {"question": "计算：(-12) ÷ 3 + (-8) × (-2) = ?", "answer": "12"},
+      {"question": "解方程组：2x + y = 11，x - y = 1，求 y。", "answer": "3"},
+      {"question": "计算：(-5)² - 3³ = ?", "answer": "-2"}
     ],
     "advanced": [
-      {"question": "已知 x + y = 5，xy = 6，求 x² + y²。", "answer": "13"}
+      {"question": "已知 x + y = 5，xy = 6，求 x² + y²。", "answer": "13"},
+      {"question": "已知 x + y = 7，xy = 10，求 x² + y²。", "answer": "29"}
     ]
   }
 }
