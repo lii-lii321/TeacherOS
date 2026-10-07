@@ -1,5 +1,7 @@
 from tests.test_students import create_student
 
+import app.services.copilot_service as copilot_service
+
 NOTE = "今天讲了二次函数，学生对顶点式理解一般，做了10道题错了3道"
 
 
@@ -84,3 +86,58 @@ async def test_lesson_note_homework_questions_vary(client):
     second_questions = [item["question"] for item in second["homework"]["items"]]
     assert first_questions and second_questions
     assert first_questions != second_questions
+
+
+class FakeLLM:
+    name = "openai"
+
+    def __init__(self, content: str):
+        self.content = content
+
+    async def complete(self, system: str, user: str) -> str:
+        return self.content
+
+
+def _with_provider(monkeypatch, content: str) -> None:
+    monkeypatch.setattr(copilot_service, "get_provider", lambda: FakeLLM(content))
+
+
+DUPLICATE_REPLY = (
+    '{"topic": "二次函数", "knowledge_points": ["二次函数", "二次函数", " 一元二次方程 ", ""],'
+    '"performance_score": 2, "problems": ["计算粗心"], "suggestions": ["多做真题"]}'
+)
+
+
+async def test_enrich_dedups_and_cleans_knowledge_points(monkeypatch):
+    _with_provider(monkeypatch, DUPLICATE_REPLY)
+    base = copilot_service.build_structured("今天讲了二次函数，做10题错3题")
+    merged = await copilot_service.enrich_with_llm("今天讲了二次函数", base)
+
+    assert merged["ai_enriched"] is True
+    assert merged["knowledge_points"] == ["二次函数", "一元二次方程"]
+    assert merged["performance_score"] == 2
+
+
+HIGH_PERF_REPLY = (
+    '{"topic": "一次函数", "knowledge_points": ["一次函数", "二次函数"],'
+    '"performance_score": 4, "problems": [], "suggestions": []}'
+)
+
+
+async def test_enrich_recomputes_weak_from_merged_kps(monkeypatch):
+    _with_provider(monkeypatch, HIGH_PERF_REPLY)
+    base = copilot_service.build_structured("复习了全等三角形，孩子表现很好")
+    merged = await copilot_service.enrich_with_llm("复习了全等三角形", base)
+
+    assert merged["knowledge_points"] == ["一次函数", "二次函数"]
+    assert merged["performance_score"] == 4
+    assert merged["weak_knowledge_points"] == ["一次函数"]
+
+
+async def test_enrich_invalid_json_falls_back_to_rules(monkeypatch):
+    _with_provider(monkeypatch, "抱歉，我无法解析这段笔记。")
+    base = copilot_service.build_structured(NOTE)
+    merged = await copilot_service.enrich_with_llm(NOTE, base)
+
+    assert merged == base
+    assert merged["ai_enriched"] is False
