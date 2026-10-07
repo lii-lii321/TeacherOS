@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class StudentCreate(BaseModel):
@@ -12,6 +12,14 @@ class StudentCreate(BaseModel):
     target_score: int | None = Field(default=None, ge=0, le=750)
     teacher_note: str = ""
 
+    @field_validator("name")
+    @classmethod
+    def _clean_name(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("name must not be blank")
+        return value
+
 
 class StudentUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=64)
@@ -21,6 +29,16 @@ class StudentUpdate(BaseModel):
     target_score: int | None = Field(default=None, ge=0, le=750)
     teacher_note: str | None = None
     status: Literal["active", "archived"] | None = None
+
+    @field_validator("name")
+    @classmethod
+    def _clean_name(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        value = value.strip()
+        if not value:
+            raise ValueError("name must not be blank")
+        return value
 
 
 class KnowledgePointOut(BaseModel):

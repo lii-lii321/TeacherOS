@@ -66,6 +66,26 @@ async def test_student_patch_invalid_status_422(client):
     assert resp.status_code == 422
 
 
+async def test_student_name_whitespace_is_cleaned(client):
+    created = await client.post(
+        "/students", json={"name": "  张三  ", "grade": "初一", "subject": "数学"}
+    )
+    assert created.status_code == 201
+    assert created.json()["name"] == "张三"
+
+    blank = await client.post("/students", json={"name": "   "})
+    assert blank.status_code == 422
+
+    renamed = await client.patch(f"/students/{created.json()['id']}", json={"name": "  李四  "})
+    assert renamed.status_code == 200
+    assert renamed.json()["name"] == "李四"
+
+    blank_patch = await client.patch(
+        f"/students/{created.json()['id']}", json={"name": "   "}
+    )
+    assert blank_patch.status_code == 422
+
+
 async def test_profile_empty(client):
     student = await create_student(client)
     resp = await client.get(f"/students/{student['id']}/profile")
