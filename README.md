@@ -89,7 +89,7 @@ dashboard.py             Streamlit UI
 | --- | --- | --- |
 | GET | `/` | app name, version, docs link |
 | GET | `/healthz` | liveness probe |
-| POST/GET/PATCH/DELETE | `/students` | manage students (DELETE = archive) |
+| POST/GET/PATCH/DELETE | `/students` | manage students (DELETE = archive; list filter `status=active/archived/all`) |
 | GET | `/students/{id}/profile` | mastery, weak points, recent accuracy |
 | GET | `/students/{id}/trends` | accuracy series + direction, mastery history, recent sessions |
 | POST/GET | `/classes` | lesson records |
