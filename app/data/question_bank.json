@@ -356,7 +356,9 @@
     "basic": [
       {"question": "计算：25 + 37 × 2 = ?", "answer": "99"},
       {"question": "解方程：3x - 6 = 12，求 x。", "answer": "6"},
-      {"question": "计算：(-2)³ = ?", "answer": "-8"}
+      {"question": "计算：(-2)³ = ?", "answer": "-8"},
+      {"question": "计算：15 × 4 - 48 ÷ 6 = ?", "answer": "52"},
+      {"question": "解方程：5x - 9 = 26，求 x。", "answer": "7"}
     ],
     "consolidation": [
       {"question": "解方程组 x + y = 7，x - y = 3，求 x。", "answer": "5"},

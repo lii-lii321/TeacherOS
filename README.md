@@ -17,7 +17,7 @@ client acquisition CRM, Data Analyst Agent → data-science engine).
   mastery from the lesson signal, and produces a next-lesson plan** (review +
   practice + suggested flow). Rule-based by default (zero API key needed),
   optionally enriched by any OpenAI-compatible LLM.
-- **Question bank & auto-grading** — 159 questions covering all 25 knowledge
+- **Question bank & auto-grading** — 161 questions covering all 25 knowledge
   points (3 basic / 2 consolidation / 1 advanced each, plus a generic fallback
   pool). Copilot drafts pull real questions, and `/homework/{id}/submit-answers`
   grades student answers automatically (normalized string match with numeric
@@ -76,7 +76,7 @@ app/
 │   ├── business_service.py   monthly summary
 │   └── llm/                  provider abstraction: mock | openai-compatible
 ├── data/
-│   └── question_bank.json    159 questions across 25 KPs + generic pool
+│   └── question_bank.json    161 questions across 25 KPs + generic pool
 └── utils/
 tests/                   pytest + httpx against in-memory SQLite
 scripts/seed_demo.py     demo students/sessions/payments
@@ -108,7 +108,7 @@ dashboard.py             Streamlit UI
 - [x] Phase 1 MVP — students, sessions, copilot note parsing, parent messages
 - [x] Phase 2 — mastery engine, lesson-signal adjustments, mastery history, trends endpoint
 - [x] Phase 3 (start) — next-lesson plan generation in copilot
-- [x] Question bank — 159 questions across all 25 knowledge points, copilot
+- [x] Question bank — 161 questions across all 25 knowledge points, copilot
   drafts pull real questions, `/homework/{id}/submit-answers` auto-grades
 - [ ] Phase 3 (rest) — multi-step copilot (note → plan → homework → feedback loop)
 - [ ] Phase 4 — renewal/retention analytics, source tracking

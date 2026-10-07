@@ -14,6 +14,28 @@ def test_bank_covers_all_kp_topics():
         assert len(pool.get("advanced", [])) >= 1, kp
 
 
+def test_generic_pool_covers_no_kp_draft():
+    bank = _load()
+    generic = bank["_通用"]
+    assert len(generic.get("basic", [])) >= 5
+
+
+async def test_no_kp_note_draft_questions_unique(client):
+    student = await create_student(client)
+    resp = await client.post(
+        "/copilot/lesson-note",
+        json={
+            "student_id": student["id"],
+            "note": "今天主要陪学生复盘学习方法，讨论了错题本的使用习惯，整体状态不错",
+        },
+    )
+    assert resp.status_code == 200
+    items = resp.json()["homework"]["items"]
+    assert len(items) == 5
+    questions = [i["question"] for i in items]
+    assert len(set(questions)) == len(questions), questions
+
+
 async def create_lesson_homework(client):
     student = await create_student(client)
     resp = await client.post(
