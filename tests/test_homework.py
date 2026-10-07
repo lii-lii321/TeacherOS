@@ -48,6 +48,44 @@ async def test_create_get_homework(client):
     assert got.json()["title"] == "巩固作业"
 
 
+async def test_homework_kp_whitespace_is_stripped(client):
+    student = await create_student(client)
+    resp = await client.post(
+        "/homework",
+        json={
+            "student_id": student["id"],
+            "title": "巩固作业",
+            "items": [{"knowledge_point": "  二次函数  "}, {"knowledge_point": "二次函数"}],
+        },
+    )
+    assert resp.status_code == 201
+    graded = await client.post(
+        f"/homework/{resp.json()['id']}/submit",
+        json={"results": [{"item_id": 1, "correct": True}, {"item_id": 2, "correct": False}]},
+    )
+    assert graded.status_code == 200
+    updates = {u["name"]: u["mastery"] for u in graded.json()["knowledge_updates"]}
+    assert updates == {"二次函数": 50}
+
+
+async def test_homework_blank_kp_422(client):
+    student = await create_student(client)
+    resp = await client.post(
+        "/homework",
+        json={"student_id": student["id"], "title": "t", "items": [{"knowledge_point": "   "}]},
+    )
+    assert resp.status_code == 422
+
+
+async def test_homework_overlong_kp_422(client):
+    student = await create_student(client)
+    resp = await client.post(
+        "/homework",
+        json={"student_id": student["id"], "title": "t", "items": [{"knowledge_point": "知" * 65}]},
+    )
+    assert resp.status_code == 422
+
+
 async def test_manual_homework_with_answers_autogrades(client):
     student = await create_student(client)
     resp = await client.post(

@@ -1,11 +1,19 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class HomeworkItemIn(BaseModel):
-    knowledge_point: str = Field(min_length=1)
+    knowledge_point: str = Field(min_length=1, max_length=64)
     difficulty: str = "basic"
     question: str = ""
     answer: str | None = None
+
+    @field_validator("knowledge_point")
+    @classmethod
+    def _clean_knowledge_point(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
+            raise ValueError("knowledge_point must not be blank")
+        return value
 
 
 class HomeworkCreate(BaseModel):
