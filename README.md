@@ -99,7 +99,7 @@ dashboard.py             Streamlit UI
 | GET | `/homework/{id}` | homework detail with items |
 | POST | `/homework/{id}/submit` | grade items manually, update mastery |
 | POST | `/homework/{id}/submit-answers` | auto-grade by comparing answers (needs answer key) |
-| POST/GET | `/payments` | record / list payments (filter by `student_id`) |
+| POST/GET | `/payments` | record / list payments (backfill via optional `occurred_at`, filter by `student_id`) |
 | GET | `/business/summary?month=YYYY-MM` | income, active students, avg price |
 | GET | `/questions` | question bank (filter by `knowledge_point`, `difficulty`) |
 

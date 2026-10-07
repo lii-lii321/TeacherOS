@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -8,6 +9,7 @@ class PaymentCreate(BaseModel):
     amount: float = Field(gt=0)
     kind: Literal["income", "expense"] = "income"
     note: str = ""
+    occurred_at: datetime | None = None
 
 
 class PaymentOut(BaseModel):
@@ -18,6 +20,7 @@ class PaymentOut(BaseModel):
     amount: float
     kind: str
     note: str
+    occurred_at: datetime
 
 
 class BusinessSummaryOut(BaseModel):

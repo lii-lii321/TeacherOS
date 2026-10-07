@@ -56,3 +56,28 @@ async def test_payments_list_with_filter(client):
 
     only_a = await client.get("/payments", params={"student_id": a["id"]})
     assert [(p["student_id"], p["amount"]) for p in only_a.json()] == [(a["id"], 300)]
+
+
+async def test_payment_backfill_occurred_at(client):
+    student = await create_student(client, name="补录同学")
+    resp = await client.post(
+        "/payments",
+        json={
+            "student_id": student["id"],
+            "amount": 300,
+            "kind": "income",
+            "occurred_at": "2026-01-15T00:00:00",
+        },
+    )
+    assert resp.status_code == 201
+    body = resp.json()
+    assert body["occurred_at"].startswith("2026-01-15")
+    listed = (await client.get("/payments")).json()
+    assert listed[0]["occurred_at"].startswith("2026-01-15")
+
+    january = (await client.get("/business/summary", params={"month": "2026-01"})).json()
+    assert january["income"] == 300
+    assert january["active_students"] == 1
+
+    current = (await client.get("/business/summary")).json()
+    assert current["income"] == 0
