@@ -81,3 +81,23 @@ async def test_payment_backfill_occurred_at(client):
 
     current = (await client.get("/business/summary")).json()
     assert current["income"] == 0
+
+
+async def test_session_backfill_and_session_only_active_student(client):
+    student = await create_student(client, name="课时同学")
+    resp = await client.post(
+        "/classes",
+        json={"student_id": student["id"], "topic": "复习", "occurred_at": "2026-02-10T00:00:00"},
+    )
+    assert resp.status_code == 201
+    assert resp.json()["occurred_at"].startswith("2026-02-10")
+
+    february = (await client.get("/business/summary", params={"month": "2026-02"})).json()
+    assert february["class_count"] == 1
+    assert february["active_students"] == 1
+    assert february["income"] == 0
+    assert february["new_students"] == 0
+
+    current = (await client.get("/business/summary")).json()
+    assert current["class_count"] == 0
+    assert current["active_students"] == 0

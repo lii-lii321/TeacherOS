@@ -46,6 +46,26 @@ async def test_students_invalid_status_422(client):
     assert resp.status_code == 422
 
 
+async def test_student_status_via_patch(client):
+    student = await create_student(client)
+    archived = await client.patch(f"/students/{student['id']}", json={"status": "archived"})
+    assert archived.status_code == 200
+    assert archived.json()["status"] == "archived"
+    assert (await client.get("/students")).json() == []
+    archived_list = (await client.get("/students", params={"status": "archived"})).json()
+    assert [s["id"] for s in archived_list] == [student["id"]]
+
+    restored = await client.patch(f"/students/{student['id']}", json={"status": "active"})
+    assert restored.json()["status"] == "active"
+    assert len((await client.get("/students")).json()) == 1
+
+
+async def test_student_patch_invalid_status_422(client):
+    student = await create_student(client)
+    resp = await client.patch(f"/students/{student['id']}", json={"status": "graduated"})
+    assert resp.status_code == 422
+
+
 async def test_profile_empty(client):
     student = await create_student(client)
     resp = await client.get(f"/students/{student['id']}/profile")
